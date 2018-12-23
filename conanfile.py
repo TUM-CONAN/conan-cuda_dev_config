@@ -33,7 +33,7 @@ class CUDADevConfigConan(ConanFile):
 
     def package_info(self):
         if self.have_cuda_dev:
-            self.cpp_info.bindirs = [cuda_bindir,]
+            self.cpp_info.bindirs = [self.cuda_bindir,]
             self.user_info.cuda_version = self.cuda_version
             self.user_info.cuda_root = self.options.cuda_root
             self.env_info.path.append(os.path.dirname(self.cuda_bindir))
