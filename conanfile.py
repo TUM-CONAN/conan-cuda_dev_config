@@ -13,7 +13,7 @@ import re
 # pylint: disable=W0201
 class CUDADevConfigConan(ConanFile):
     name = "cuda_dev_config"
-    version = "10.0"
+    version = "1.0"
     license = "Proprietary Dependency"
     export = ["LICENSE.md"]
     description = "Configuration of CUDA SDK for use as a development dependency."
@@ -35,8 +35,9 @@ class CUDADevConfigConan(ConanFile):
         if self.have_cuda_dev:
             self.cpp_info.bindirs = [cuda_bindir,]
             self.user_info.cuda_version = self.cuda_version
-            self.user_info.cuda_root = self.settings.cuda_root
+            self.user_info.cuda_root = self.options.cuda_root
             self.env_info.path.append(os.path.dirname(self.cuda_bindir))
+            self.env_info.CUDA_SDK_ROOT_DIR = self.options.cuda_root
 
     @property
     def have_cuda_dev(self):
@@ -52,12 +53,14 @@ class CUDADevConfigConan(ConanFile):
             cmd = "--version"
             result = self.run_nvcc_command(cmd)
             match = re.match(r".*, (\w+) (10.0).*", result.splitlines()[-1])
-            if match and match.group(0) == "release":
-                self._cuda_version = match.group(1)
-                self.output.info("Found CUDA SDK: %s" % self._cuda_version)
+            self._cuda_version = None
+            if match:
+                vt, version = match.groups()
+                if vt == 'release':
+                    self._cuda_version = version
+                    self.output.info("Found CUDA SDK: %s" % self._cuda_version)
             else:
-                self.output.warning("Invalid response from calling nvcc --version: %r" % result)
-                self._cuda_version = None
+                self.output.info("Invalid response from calling nvcc --version: %r" % result)
         return self._cuda_version
 
     @property
@@ -65,7 +68,7 @@ class CUDADevConfigConan(ConanFile):
         return self.get_cuda_path("bin")
 
     def get_cuda_path(self, dir_name):
-        return os.path.join(self.settings.cuda_root, dir_name)
+        return os.path.join(str(self.options.cuda_root), dir_name)
 
     def run_nvcc_command(self, cmd):
         nvcc_executable = os.path.join(self.cuda_bindir, "nvcc")
