@@ -35,9 +35,9 @@ class CUDADevConfigConan(ConanFile):
         if self.have_cuda_dev:
             self.cpp_info.bindirs = [self.cuda_bindir,]
             self.user_info.cuda_version = self.cuda_version
-            self.user_info.cuda_root = self.options.cuda_root
+            self.user_info.cuda_root = str(self.options.cuda_root)
             self.env_info.path.append(os.path.dirname(self.cuda_bindir))
-            self.env_info.CUDA_SDK_ROOT_DIR = self.options.cuda_root
+            self.env_info.CUDA_SDK_ROOT_DIR = str(self.options.cuda_root)
 
     @property
     def have_cuda_dev(self):
