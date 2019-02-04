@@ -1,13 +1,22 @@
 #!/usr/bin/env cuda
 # -*- coding: utf-8 -*-
 
-from conans import ConanFile
+from conans import ConanFile, tools
 try:
     from cStringIO import StringIO
 except ImportError:
     from io import StringIO
 import os
 import re
+
+## somehow exporting does not provide access to package options
+# so defining cuda_root only works with conan create, but not conan export ..
+if tools.os_info.is_windows:
+    CUDA_ROOT_DEFAULT = "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.0"
+elif tools.os_info.is_linux:
+    CUDA_ROOT_DEFAULT = "/usr/local/cuda"
+else:
+    raise RuntimeError("Unsupported Platform")
 
 
 # pylint: disable=W0201
@@ -23,7 +32,10 @@ class CUDADevConfigConan(ConanFile):
         "cuda_version": ["10.0", "9.0"],
         "cuda_root": "ANY",
         }
-    default_options = "cuda_version=10.0", "cuda_root=/usr/local/cuda"
+    default_options = (
+        "cuda_version=10.0", 
+        "cuda_root=%s" % CUDA_ROOT_DEFAULT,
+        )
     settings = "os", "arch"
     build_policy = "missing"
 
@@ -36,7 +48,7 @@ class CUDADevConfigConan(ConanFile):
             self.cpp_info.bindirs = [self.cuda_bindir,]
             self.user_info.cuda_version = self.cuda_version
             self.user_info.cuda_root = str(self.options.cuda_root)
-            self.env_info.path.append(os.path.dirname(self.cuda_bindir))
+            self.env_info.path.append(str(self.options.cuda_root))
             self.env_info.CUDA_SDK_ROOT_DIR = str(self.options.cuda_root)
 
     @property
