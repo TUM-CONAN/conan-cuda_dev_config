@@ -64,7 +64,7 @@ class CUDADevConfigConan(ConanFile):
         if not hasattr(self, '_cuda_version'):
             cmd = "--version"
             result = self.run_nvcc_command(cmd)
-            match = re.match(r".*, (\w+) (10.0).*", result.splitlines()[-1])
+            match = re.match( r".*, (\w+) ({}).*".format( self.options.cuda_version ), result.splitlines()[-1])
             self._cuda_version = None
             if match:
                 vt, version = match.groups()
