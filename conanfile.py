@@ -29,7 +29,7 @@ class CUDADevConfigConan(ConanFile):
     url = "https://github.com/ulricheck/conan-cuda_dev_config"
     author = "Ulrich Eck <ulrich.eck@tum.de>"
     options = { 
-        "cuda_version": ["10.1", "10.0", "9.0"],
+        "cuda_version": ["10.1", "10.0", "9.1", "9.0"],
         "cuda_root": "ANY",
         }
     default_options = (
@@ -38,7 +38,7 @@ class CUDADevConfigConan(ConanFile):
         )
     settings = "os", "arch"
     build_policy = "missing"
-    supportedVersions = ["10.0", "9.1", "9.0"]
+    supportedVersions = ["10.1", "10.0", "9.1", "9.0"]
 
     def package_id(self):
         self.info.header_only()
