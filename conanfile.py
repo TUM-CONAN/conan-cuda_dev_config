@@ -83,7 +83,7 @@ class CUDADevConfigConan(ConanFile):
         return self.get_cuda_path("bin")
 
     def get_cuda_path(self, dir_name):
-        if tools.os_info.is_windows and not os.path.exists(self.options.cuda_root):
+        if tools.os_info.is_windows and not os.path.exists(str(self.options.cuda_root)):
             default_path = "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v{}"
             for version in self.supportedVersions:
                 cudaPath = default_path.format(version)
