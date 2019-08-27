@@ -29,7 +29,11 @@ class CUDADevConfigConan(ConanFile):
     url = "https://github.com/ulricheck/conan-cuda_dev_config"
     author = "Ulrich Eck <ulrich.eck@tum.de>"
     options = { 
+<<<<<<< HEAD
         "cuda_version": ["10.0", "9.1", "9.0"],
+=======
+        "cuda_version": ["10.1", "10.0", "9.0"],
+>>>>>>> 146cfc838dad1692c6b9a05f41e4f93b3f951148
         "cuda_root": "ANY",
         }
     default_options = (
