@@ -29,7 +29,7 @@ class CUDADevConfigConan(ConanFile):
     url = "https://github.com/ulricheck/conan-cuda_dev_config"
     author = "Ulrich Eck <ulrich.eck@tum.de>"
     options = { 
-        "cuda_version": ["10.0", "9.0"],
+        "cuda_version": ["10.0", "9.1", "9.0"],
         "cuda_root": "ANY",
         }
     default_options = (
@@ -38,6 +38,7 @@ class CUDADevConfigConan(ConanFile):
         )
     settings = "os", "arch"
     build_policy = "missing"
+    supportedVersions = ["10.0", "9.1", "9.0"]
 
     def package_id(self):
         self.info.header_only()
@@ -61,6 +62,8 @@ class CUDADevConfigConan(ConanFile):
 
     @property
     def cuda_version(self):
+
+					
         if not hasattr(self, '_cuda_version'):
             cmd = "--version"
             result = self.run_nvcc_command(cmd)
@@ -80,6 +83,13 @@ class CUDADevConfigConan(ConanFile):
         return self.get_cuda_path("bin")
 
     def get_cuda_path(self, dir_name):
+        if tools.os_info.is_windows and not os.path.exists(self.options.cuda_root):
+            default_path = "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v{}"
+            for version in self.supportedVersions:
+                cudaPath = default_path.format(version)
+                if os.path.exists(cudaPath):
+                    self.options.cuda_root = cudaPath
+                    break
         return os.path.join(str(self.options.cuda_root), dir_name)
 
     def run_nvcc_command(self, cmd):
