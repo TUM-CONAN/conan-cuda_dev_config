@@ -22,14 +22,14 @@ else:
 # pylint: disable=W0201
 class CUDADevConfigConan(ConanFile):
     name = "cuda_dev_config"
-    version = "1.0"
+    version = "1.1"
     license = "Proprietary Dependency"
     export = ["LICENSE.md"]
     description = "Configuration of CUDA SDK for use as a development dependency."
     url = "https://github.com/ulricheck/conan-cuda_dev_config"
     author = "Ulrich Eck <ulrich.eck@tum.de>"
     options = { 
-        "cuda_version": ["10.2", "10.1", "10.0", "9.1", "9.0"],
+        "cuda_version": ["11.2", "11.1", "11.0", "10.2", "10.1", "10.0", "9.1", "9.0"],
         "cuda_root": "ANY",
         }
     default_options = (
@@ -38,7 +38,7 @@ class CUDADevConfigConan(ConanFile):
         )
     settings = "os", "arch"
     build_policy = "missing"
-    supportedVersions = ["10.2", "10.1", "10.0", "9.1", "9.0"]
+    supportedVersions = ["11.2", "11.1", "11.0", "10.2", "10.1", "10.0", "9.1", "9.0"]
 
     def package_id(self):
         self.info.header_only()
@@ -51,6 +51,8 @@ class CUDADevConfigConan(ConanFile):
             self.user_info.cuda_root = str(self.options.cuda_root)
             self.env_info.path.append(str(self.options.cuda_root))
             self.env_info.CUDA_SDK_ROOT_DIR = str(self.options.cuda_root)
+    def export(self):
+        self.copy("LICENSE.md")
 
     @property
     def have_cuda_dev(self):
@@ -62,18 +64,19 @@ class CUDADevConfigConan(ConanFile):
 
     @property
     def cuda_version(self):
-
-					
         if not hasattr(self, '_cuda_version'):
             cmd = "--version"
             result = self.run_nvcc_command(cmd)
-            match = re.match( r".*, (\w+) ({}).*".format( self.options.cuda_version ), result.splitlines()[-1])
+            regex = r".*, (\w+) ({}).*".format( self.options.cuda_version )
+            search = re.search(regex,result)
             self._cuda_version = None
-            if match:
-                vt, version = match.groups()
-                if vt == 'release':
-                    self._cuda_version = version
-                    self.output.info("Found CUDA SDK: %s" % self._cuda_version)
+            if search:
+                match= re.match(regex,search.group())
+                if match:
+                    vt, version = match.groups()
+                    if vt == 'release':
+                        self._cuda_version = version
+                        self.output.info("Found CUDA SDK: %s" % self._cuda_version)
             else:
                 self.output.info("Invalid response from calling nvcc --version: %r" % result)
         return self._cuda_version
@@ -83,7 +86,7 @@ class CUDADevConfigConan(ConanFile):
         return self.get_cuda_path("bin")
 
     def get_cuda_path(self, dir_name):
-        if tools.os_info.is_windows and not os.path.exists(str(self.options.cuda_root)):
+        if tools.os_info.is_windows and not (os.path.exists(str(self.options.cuda_root)) and self.options.cuda_version=="10.0"):
             default_path = "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v{}"
             for version in self.supportedVersions:
                 cudaPath = default_path.format(version)
