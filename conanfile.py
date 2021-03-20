@@ -88,11 +88,15 @@ class CUDADevConfigConan(ConanFile):
     def get_cuda_path(self, dir_name):
         if tools.os_info.is_windows and not (os.path.exists(str(self.options.cuda_root)) and self.options.cuda_version=="10.0"):
             default_path = "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v{}"
-            for version in self.supportedVersions:
-                cudaPath = default_path.format(version)
-                if os.path.exists(cudaPath):
-                    self.options.cuda_root = cudaPath
-                    break
+            preferred_path = default_path.format(self.options.cuda_version)
+            if(os.path.exists(preferred_path)):
+                self.options.cuda_root = preferred_path
+            else:
+                for version in self.supportedVersions:
+                    cudaPath = default_path.format(version)
+                    if os.path.exists(cudaPath):
+                        self.options.cuda_root = cudaPath
+                        break
         return os.path.join(str(self.options.cuda_root), dir_name)
 
     def run_nvcc_command(self, cmd):
