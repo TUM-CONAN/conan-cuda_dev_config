@@ -12,9 +12,9 @@ import re
 ## somehow exporting does not provide access to package options
 # so defining cuda_root only works with conan create, but not conan export ..
 if tools.os_info.is_windows:
-    CUDA_ROOT_DEFAULT = "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.0"
+    CUDA_ROOT_DEFAULT = "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.1"
 elif tools.os_info.is_linux:
-    CUDA_ROOT_DEFAULT = "/usr/local/cuda"
+    CUDA_ROOT_DEFAULT = "/usr/local/cuda-11.1"
 else:
     raise RuntimeError("Unsupported Platform")
 
@@ -22,14 +22,14 @@ else:
 # pylint: disable=W0201
 class CUDADevConfigConan(ConanFile):
     name = "cuda_dev_config"
-    version = "1.0"
+    version = "1.1"
     license = "Proprietary Dependency"
     export = ["LICENSE.md"]
     description = "Configuration of CUDA SDK for use as a development dependency."
     url = "https://github.com/ulricheck/conan-cuda_dev_config"
     author = "Ulrich Eck <ulrich.eck@tum.de>"
-    options = { 
-        "cuda_version": ["10.2", "10.1", "10.0", "9.1", "9.0"],
+    options = { ""
+                "cuda_version": ["11.2","11.1","11.0","10.2", "10.1", "10.0", "9.1", "9.0"],
         "cuda_root": "ANY",
         }
     default_options = (
@@ -38,7 +38,7 @@ class CUDADevConfigConan(ConanFile):
         )
     settings = "os", "arch"
     build_policy = "missing"
-    supportedVersions = ["10.2", "10.1", "10.0", "9.1", "9.0"]
+    supportedVersions = ["11.2","11.1","11.0","10.2", "10.1", "10.0", "9.1", "9.0"]
 
     def package_id(self):
         self.info.header_only()
