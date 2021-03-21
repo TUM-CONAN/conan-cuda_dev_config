@@ -33,7 +33,7 @@ class CUDADevConfigConan(ConanFile):
         "cuda_root": "ANY",
         }
     default_options = (
-        "cuda_version=10.0", 
+        "cuda_version=11.1", 
         "cuda_root=%s" % CUDA_ROOT_DEFAULT,
         )
     settings = "os", "arch"
@@ -67,7 +67,7 @@ class CUDADevConfigConan(ConanFile):
         if not hasattr(self, '_cuda_version'):
             cmd = "--version"
             result = self.run_nvcc_command(cmd)
-            match = re.match( r".*, (\w+) ({}).*".format( self.options.cuda_version ), result.splitlines()[-1])
+            match = re.match( r".*, (\w+) ({}).*".format( self.options.cuda_version ), result.splitlines()[3])
             self._cuda_version = None
             if match:
                 vt, version = match.groups()
