@@ -24,12 +24,12 @@ class CUDADevConfigConan(ConanFile):
     name = "cuda_dev_config"
     version = "1.1"
     license = "Proprietary Dependency"
-    export = ["LICENSE.md"]
+    exports = ["LICENSE.md"]
     description = "Configuration of CUDA SDK for use as a development dependency."
     url = "https://github.com/ulricheck/conan-cuda_dev_config"
     author = "Ulrich Eck <ulrich.eck@tum.de>"
     options = { ""
-                "cuda_version": ["11.2","11.1","11.0","10.2", "10.1", "10.0", "9.1", "9.0"],
+                "cuda_version": ["11.4","11.2","11.1","11.0","10.2", "10.1", "10.0", "9.1", "9.0"],
         "cuda_root": "ANY",
         }
     default_options = (
@@ -38,7 +38,7 @@ class CUDADevConfigConan(ConanFile):
         )
     settings = "os", "arch"
     build_policy = "missing"
-    supportedVersions = ["11.2","11.1","11.0","10.2", "10.1", "10.0", "9.1", "9.0"]
+    supportedVersions = ["11.4", "11.2","11.1","11.0","10.2", "10.1", "10.0", "9.1", "9.0"]
 
     def package_id(self):
         self.info.header_only()
