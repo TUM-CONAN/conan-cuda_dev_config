@@ -4,16 +4,6 @@
 from conans import ConanFile, tools
 import os
 
-## somehow exporting does not provide access to package options
-# so defining cuda_root only works with conan create, but not conan export ..
-CUDA_ROOT_DEFAULT = None
-if tools.os_info.is_windows:
-    CUDA_ROOT_DEFAULT = "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.1"
-elif tools.os_info.is_linux:
-    CUDA_ROOT_DEFAULT = "/usr/local/cuda-11.1"
-else:
-    print("WARNING: Building with CUDA on Unsupported Platform!!")
-
 # pylint: disable=W0201
 class CUDADevConfigConan(ConanFile):
     python_requires = "camp_common/[>=0.1]@camposs/stable"
@@ -30,13 +20,17 @@ class CUDADevConfigConan(ConanFile):
         "cuda_version": ["11.4","11.2","11.1","11.0","10.2", "10.1", "10.0", "9.1", "9.0"],
         "cuda_root": "ANY",
         }
-    default_options = (
-        "cuda_version=11.1", 
-        "cuda_root=%s" % CUDA_ROOT_DEFAULT,
-        )
+    default_options = {
+        "cuda_version": "11.1", 
+        "cuda_root": "ANY",
+    }
 
     settings = "os", "arch"
     build_policy = "missing"
+
+    def validate(self):
+        assert(self.have_cuda_dev)
+
 
     def package_info(self):
         if self.have_cuda_dev:
