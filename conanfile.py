@@ -3,6 +3,7 @@
 
 from conan import ConanFile
 from conan.errors import ConanException
+from conan.tools.files import save
 import os
 
 # pylint: disable=W0201
@@ -12,6 +13,8 @@ class CUDADevConfigConan(ConanFile):
 
     name = "cuda_dev_config"
     version = "2.1"
+    package_type = "shared-library"
+
     license = "Proprietary Dependency"
     exports = ["LICENSE.md"]
     description = "Configuration of CUDA SDK for use as a development dependency."
@@ -39,9 +42,15 @@ class CUDADevConfigConan(ConanFile):
         if not os.path.exists(self._cuda_bin_dir):
             raise ConanException("nvcc : {} not found", self._cuda_bin_dir)
 
+    def package_id(self):
+        self.info.clear()
+
+    def package(self):
+        save(self, os.path.join(self.package_folder, "include", "dummy.txt"), "placeholder")
+
     def package_info(self):
         if self.have_cuda_toolkit:
-            self.cpp_info.includedirs.append(self._cuda_include_dir)
+            self.cpp_info.includedirs = [self._cuda_include_dir, ]
             self.cpp_info.libs.append(self._cuda_runtime_ldname)
 
             # self.cpp_info.resdirs
