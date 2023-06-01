@@ -51,7 +51,7 @@ class CUDADevConfigConan(ConanFile):
     def package_info(self):
         if self.have_cuda_toolkit:
             self.cpp_info.includedirs = [self._cuda_include_dir, ]
-            self.cpp_info.libs.append(self._cuda_runtime_ldname)
+            self.cpp_info.system_libs.append(self._cuda_runtime_ldname)
 
             # self.cpp_info.resdirs
             self.cpp_info.libdirs.append(self._cuda_lib_dir)
