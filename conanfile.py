@@ -6,6 +6,32 @@ from conan.errors import ConanException
 from conan.tools.files import save
 import os
 
+
+def get_path(conanfile, filepath):
+    "For Windows, Converts the given path into 8.3 (DOS) form equivalent to work with e.g. pkgconfig."
+    if not (conanfile.settings.os == "Windows" or conanfile.settings.os == "WindowsStore"):
+        return filepath
+
+    import win32api, os
+    if filepath[-1] == "/":
+        filepath = filepath[:-1]
+    tokens = os.path.normpath(filepath).split("\\")
+    if len(tokens) == 1:
+        return filepath
+    ShortPath = tokens[0]
+    for token in tokens[1:]:
+        PartPath = "/".join([ShortPath, token])
+        Found = win32api.FindFiles(PartPath)
+        if Found == []:
+            raise WindowsError('The system cannot find the path specified: "{0}"'.format(PartPath))
+        else:
+            if Found[0][9] == "":
+                ShortToken = token
+            else:
+                ShortToken = Found[0][9]
+            ShortPath = ShortPath + "/" + ShortToken
+    return ShortPath
+
 # pylint: disable=W0201
 class CUDADevConfigConan(ConanFile):
     python_requires = "camp_common/0.5@camposs/stable"
@@ -50,20 +76,20 @@ class CUDADevConfigConan(ConanFile):
 
     def package_info(self):
         if self.have_cuda_toolkit:
-            self.cpp_info.includedirs = [self._cuda_include_dir, ]
+            self.cpp_info.includedirs = [get_path(self, self._cuda_include_dir), ]
             self.cpp_info.system_libs.append(self._cuda_runtime_ldname)
 
             # self.cpp_info.resdirs
-            self.cpp_info.libdirs.append(self._cuda_lib_dir)
-            self.cpp_info.bindirs.append(self._cuda_bin_dir)
+            self.cpp_info.libdirs.append(get_path(self, self._cuda_lib_dir))
+            self.cpp_info.bindirs.append(get_path(self, self._cuda_bin_dir))
 
             # buildenv_info here
-            self.buildenv_info.append_path("PATH", self._cuda_lib_dir)
-            self.buildenv_info.append_path("PATH", self._cuda_bin_dir)
+            self.buildenv_info.append_path("PATH", get_path(self, self._cuda_lib_dir))
+            self.buildenv_info.append_path("PATH", get_path(self, self._cuda_bin_dir))
             self.buildenv_info.define_path("CUDA_SDK_ROOT_DIR", self._cuda_sdk_root)
 
             self.conf_info.define("cuda_dev_config:cuda_version", self._cuda_version)
-            self.conf_info.define("cuda_dev_config:cuda_root", self._cuda_sdk_root)
+            self.conf_info.define("cuda_dev_config:cuda_root", get_path(self, self._cuda_sdk_root))
 
     @property
     def have_cuda_toolkit(self):
