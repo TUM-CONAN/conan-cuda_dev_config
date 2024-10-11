@@ -38,7 +38,7 @@ class CUDADevConfigConan(ConanFile):
     python_requires_extend = "camp_common.CampCudaBase"
 
     name = "cuda_dev_config"
-    version = "2.1"
+    version = "2.2"
     package_type = "shared-library"
 
     license = "Proprietary Dependency"
@@ -48,13 +48,17 @@ class CUDADevConfigConan(ConanFile):
     author = "Ulrich Eck <ulrich.eck@tum.de>"
     options = {
         "shared": [True, False],
-        "cuda_version": ["12.1","12.0","11.8","11.7","11.6","11.5","11.4","11.2","11.1","11.0","10.2", "10.1", "10.0"],
+        "cuda_version": ["12.6","12.5","12.4","12.3","12.2","12.1","12.0",
+                         "11.8","11.7","11.6","11.5","11.4","11.2","11.1","11.0",
+                         "10.2", "10.1", "10.0"],
         "cuda_root": ["ANY", ],
+        "cuda_archs": ["ANY",],
         }
     default_options = {
         'shared': True,
-        "cuda_version": "11.7",
+        "cuda_version": "11.8",
         "cuda_root": "ANY",
+        "cuda_archs": "75,86",
     }
 
     settings = "os", "arch"
@@ -84,12 +88,16 @@ class CUDADevConfigConan(ConanFile):
             self.cpp_info.bindirs.append(get_path(self, self._cuda_bin_dir))
 
             # buildenv_info here
+            cuda_archs = ";".join(str(self.options.cuda_archs).split(","))
+
             self.buildenv_info.append_path("PATH", get_path(self, self._cuda_lib_dir))
             self.buildenv_info.append_path("PATH", get_path(self, self._cuda_bin_dir))
             self.buildenv_info.define_path("CUDA_SDK_ROOT_DIR", self._cuda_sdk_root)
+            self.buildenv_info.define_path("CUDAARCHS", cuda_archs)
 
             self.conf_info.define("cuda_dev_config:cuda_version", self._cuda_version)
             self.conf_info.define("cuda_dev_config:cuda_root", get_path(self, self._cuda_sdk_root))
+            self.conf_info.define("cuda_dev_config:cuda_archs", cuda_archs)
 
     @property
     def have_cuda_toolkit(self):
