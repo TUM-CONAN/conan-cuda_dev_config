@@ -48,7 +48,7 @@ class CUDADevConfigConan(ConanFile):
     author = "Ulrich Eck <ulrich.eck@tum.de>"
     options = {
         "shared": [True, False],
-        "cuda_version": ["12.8","12.7","12.6","12.5","12.4","12.3","12.2","12.1","12.0",
+        "cuda_version": ["12.9","12.8","12.7","12.6","12.5","12.4","12.3","12.2","12.1","12.0",
                          "11.8","11.7","11.6","11.5","11.4","11.2","11.1","11.0",
                          "10.2", "10.1", "10.0"],
         "cuda_root": ["ANY", ],
