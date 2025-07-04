@@ -95,9 +95,9 @@ class CUDADevConfigConan(ConanFile):
             self.buildenv_info.define_path("CUDA_SDK_ROOT_DIR", self._cuda_sdk_root)
             self.buildenv_info.define_path("CUDAARCHS", cuda_archs)
 
-            self.conf_info.define("camp.pcpd.cuda_dev_config:cuda_version", self._cuda_version)
-            self.conf_info.define("camp.pcpd.cuda_dev_config:cuda_root", get_path(self, self._cuda_sdk_root))
-            self.conf_info.define("camp.pcpd.cuda_dev_config:cuda_archs", cuda_archs)
+            self.conf_info.define("user.cuda_dev_config:cuda_version", self._cuda_version)
+            self.conf_info.define("user.cuda_dev_config:cuda_root", get_path(self, self._cuda_sdk_root))
+            self.conf_info.define("user.cuda_dev_config:cuda_archs", cuda_archs)
 
     @property
     def have_cuda_toolkit(self):
