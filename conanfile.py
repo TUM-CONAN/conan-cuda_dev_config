@@ -34,7 +34,7 @@ def get_path(conanfile, filepath):
 
 # pylint: disable=W0201
 class CUDADevConfigConan(ConanFile):
-    python_requires = "camp_common/0.5@camposs/stable"
+    python_requires = "camp_common/0.6@camposs/stable"
     python_requires_extend = "camp_common.CampCudaBase"
 
     name = "cuda_dev_config"
@@ -56,9 +56,9 @@ class CUDADevConfigConan(ConanFile):
         }
     default_options = {
         'shared': True,
-        "cuda_version": "11.8",
+        "cuda_version": "12.9",
         "cuda_root": "ANY",
-        "cuda_archs": "75,86",
+        "cuda_archs": "75,86,89",
     }
 
     settings = "os", "arch"
