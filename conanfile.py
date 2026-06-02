@@ -39,7 +39,7 @@ class CUDADevConfigConan(ConanFile):
 
     name = "cuda_dev_config"
     version = "2.2"
-    package_type = "shared-library"
+    package_type = "library"
 
     license = "Proprietary Dependency"
     exports = ["LICENSE.md"]
