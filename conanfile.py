@@ -34,11 +34,11 @@ def get_path(conanfile, filepath):
 
 # pylint: disable=W0201
 class CUDADevConfigConan(ConanFile):
-    python_requires = "camp_common/0.6@camposs/stable"
+    python_requires = "camp_common/0.7@camposs/stable"
     python_requires_extend = "camp_common.CampCudaBase"
 
     name = "cuda_dev_config"
-    version = "2.2"
+    version = "2.3"
     package_type = "library"
 
     license = "Proprietary Dependency"
@@ -48,7 +48,7 @@ class CUDADevConfigConan(ConanFile):
     author = "Ulrich Eck <ulrich.eck@tum.de>"
     options = {
         "shared": [True, False],
-        "cuda_version": ["12.9","12.8","12.7","12.6","12.5","12.4","12.3","12.2","12.1","12.0",
+        "cuda_version": ["13.2","13.1","13.0","12.9","12.8","12.7","12.6","12.5","12.4","12.3","12.2","12.1","12.0",
                          "11.8","11.7","11.6","11.5","11.4","11.2","11.1","11.0",
                          "10.2", "10.1", "10.0"],
         "cuda_root": ["ANY", ],

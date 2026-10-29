@@ -1,0 +1,1 @@
+. "/home/ecku/develop/recipes/conan-cuda_dev_config/test_package/conanrunenv-x86_64.sh"

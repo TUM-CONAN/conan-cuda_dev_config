@@ -1,0 +1,1 @@
+. "/home/ecku/develop/recipes/conan-cuda_dev_config/test_package/deactivate_conanbuildenv-x86_64.sh"
